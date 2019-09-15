@@ -1,3 +1,7 @@
+<div class="persons-form form-inline">
+  <a class="btn btn-primary form-control" routerLink="/addPerson">Add person</a>
+  <a class="btn btn-outline-secondary form-control" routerLink="/addPerson-oldStyle">Add person - Old style</a>
+</div>
 <div class="list-group">
   <a class="list-group-item list-group-item-action" *ngFor="let person of persons$ | async"
     routerLink="/persons/{{person.id}}">

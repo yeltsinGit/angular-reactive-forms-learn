@@ -1,7 +1,7 @@
-import { PersonsService } from './../persons/persons.service';
+import { PersonsService } from '../persons.service';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IPerson } from '../models/person';
+import { IPerson } from '../../models/person';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 
