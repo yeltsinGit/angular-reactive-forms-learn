@@ -1,0 +1,6 @@
+<div class="list-group">
+  <a class="list-group-item list-group-item-action" *ngFor="let person of persons$ | async"
+    routerLink="/persons/{{person.id}}">
+    {{person.name}}
+  </a>
+</div>
