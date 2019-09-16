@@ -1,1 +1,90 @@
-<p>person-form works!</p>
+<form class="person-form">
+
+  <!-- FIRST NAME -->
+  <div class="form-group row">
+    <label for="firstName" class="col-sm-3 col-form-label">First name</label>
+    <div class="col-sm-9">
+      <input id="firstName" class="form-control" placeholder="First name (required)" minlength="3">
+    </div>
+  </div>
+
+  <!-- LAST NAME -->
+  <div class="form-group row">
+    <label for="lastName" class="col-sm-3 col-form-label">Last name</label>
+    <div class="col-sm-9">
+      <input id="lastName" class="form-control" placeholder="Last name (required)" minlength="3">
+    </div>
+  </div>
+
+  <!-- EMAIL -->
+  <div class="form-group row">
+    <label for="email" class="col-sm-3 col-form-label">Email</label>
+    <div class="col-sm-9">
+      <input id="email" type="email" class="form-control" placeholder="Email (required)">
+    </div>
+  </div>
+
+  <!-- HAS ADDRESS -->
+  <div class="form-group row">
+    <div class="col-sm-9">
+      <div class="form-check">
+        <input id="hasAdress" type="checkbox" class="form-check-input">
+        <label class="form-check-label" for="hasAdress">Has address</label>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <!-- ADDRESS TYPE -->
+    <div class="form-group row">
+      <legend class="col-sm-3 col-form-label">Address type</legend>
+      <div class="col-sm-9 form-row align-items-center">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="addressRadios" id="addressHome" value="home" checked>
+          <label class="form-check-label" for="addressHome">
+            Home
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="addressRadios" id="addressWork" value="work">
+          <label class="form-check-label" for="addressWork">
+            Work
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="addressRadios" id="addressOther" value="other">
+          <label class="form-check-label" for="addressOther">
+            Other
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- CITY, STATE, ZIP CODE -->
+    <div class="form-group row">
+      <label for="addressType" class="col-sm-3 col-form-label">City, State, Zip code</label>
+
+      <div class="col-sm-9 row">
+        <div class="form-group col-md-5">
+          <label for="addressCity">City</label>
+          <input type="text" class="form-control" id="addressCity">
+        </div>
+
+        <div class="form-group col-md-4">
+          <label for="addressState">State</label>
+          <select id="addressState" class="form-control">
+            <option selected>Choose...</option>
+            <option>...</option>
+          </select>
+        </div>
+
+        <div class="form-group col-md-3">
+          <label for="addressZip">Zip</label>
+          <input type="text" class="form-control" id="addressZip">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save</button>
+</form>
