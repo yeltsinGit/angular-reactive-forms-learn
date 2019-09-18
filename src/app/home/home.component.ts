@@ -1,5 +1,6 @@
 import buildingATemplateDrivenForm from 'src/learn/buildingATemplateDrivenForm';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import buildingAReactiveForm from 'src/learn/buildingAReactiveForm';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     buildingATemplateDrivenForm();
+    buildingAReactiveForm();
   }
 
 }

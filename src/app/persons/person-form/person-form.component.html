@@ -1,18 +1,16 @@
-<form class="person-form">
+<form class="person-form" novalidate (ngSubmit)="submitForm()" [formGroup]="personForm">
 
-  <!-- FIRST NAME -->
+  <!-- NAME -->
   <div class="form-group row">
-    <label for="firstName" class="col-sm-3 col-form-label">First name</label>
+    <label for="name" class="col-sm-3 col-form-label">Name</label>
     <div class="col-sm-9">
-      <input id="firstName" class="form-control" placeholder="First name (required)" minlength="3">
-    </div>
-  </div>
-
-  <!-- LAST NAME -->
-  <div class="form-group row">
-    <label for="lastName" class="col-sm-3 col-form-label">Last name</label>
-    <div class="col-sm-9">
-      <input id="lastName" class="form-control" placeholder="Last name (required)" minlength="3">
+      <input id="name" class="form-control" placeholder="name (required)" required minlength="3" formControlName="name"
+        [ngClass]="{'is-invalid': (personForm.get('name').touched || personForm.get('name').dirty) && !personForm.get('name').valid}">
+      <span class="invalid-feedback"
+        *ngIf="(personForm.get('name').touched || personForm.get('name').dirty) && !personForm.get('name').valid">
+        <span *ngIf="personForm.get('name').errors?.required">This field is required</span>
+        <span *ngIf="personForm.get('name').errors?.minlength">Field length should be minimum 3 characters</span>
+      </span>
     </div>
   </div>
 
@@ -20,7 +18,14 @@
   <div class="form-group row">
     <label for="email" class="col-sm-3 col-form-label">Email</label>
     <div class="col-sm-9">
-      <input id="email" type="email" class="form-control" placeholder="Email (required)">
+      <input id="email" type="email" class="form-control" placeholder="Email (required)" required minlength="3"
+        formControlName="email"
+        [ngClass]="{'is-invalid': (personForm.get('email').touched || personForm.get('email').dirty) && !personForm.get('email').valid}">
+      <span class="invalid-feedback"
+        *ngIf="(personForm.get('email').touched || personForm.get('email').dirty) && !personForm.get('email').valid">
+        <span *ngIf="personForm.get('email').errors?.required">This field is required</span>
+        <span *ngIf="personForm.get('email').errors?.minlength">Field length should be minimum 3 characters</span>
+      </span>
     </div>
   </div>
 
@@ -28,13 +33,13 @@
   <div class="form-group row">
     <div class="col-sm-9">
       <div class="form-check">
-        <input id="hasAdress" type="checkbox" class="form-check-input">
+        <input id="hasAdress" type="checkbox" class="form-check-input" formControlName="hasAddress">
         <label class="form-check-label" for="hasAdress">Has address</label>
       </div>
     </div>
   </div>
 
-  <div>
+  <div *ngIf="personForm.get('hasAddress').value === true">
     <!-- ADDRESS TYPE -->
     <div class="form-group row">
       <legend class="col-sm-3 col-form-label">Address type</legend>
@@ -86,5 +91,6 @@
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary">Save</button>
+  <button type="submit" class="btn btn-primary" [disabled]="!personForm.valid">Save</button>
+  <button type="submit" class="btn btn-outline-secondary" (click)="onPopulateBtnClick()">Populate test data</button>
 </form>
