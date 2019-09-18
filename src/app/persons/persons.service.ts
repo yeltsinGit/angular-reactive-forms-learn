@@ -16,4 +16,8 @@ export class PersonsService {
   loadPerson(id: string): Observable<IPerson> {
     return this.http.get<IPerson>(`${this.API_URL}/users/${id}`);
   }
+
+  savePerson(person: IPerson) {
+    this.http.post<IPerson>(`${this.API_URL}/users/`, {...person});
+  }
 }

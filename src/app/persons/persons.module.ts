@@ -6,12 +6,14 @@ import { PersonsComponent } from './persons.component';
 import { PersonComponent } from './person/person.component';
 import { PersonFormComponent } from './person-form/person-form.component';
 import { PersonFormOldStyleComponent } from './person-form-old-style/person-form-old-style.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [PersonsComponent, PersonComponent, PersonFormComponent, PersonFormOldStyleComponent],
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
   ],
   providers: [PersonsService]
 })

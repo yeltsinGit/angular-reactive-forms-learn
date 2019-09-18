@@ -1,4 +1,4 @@
-import gettingStartedWithForms from 'src/learn/gettingStartedWithReactiveForms';
+import buildingATemplateDrivenForm from 'src/learn/buildingATemplateDrivenForm';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 @Component({
@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    gettingStartedWithForms();
+    buildingATemplateDrivenForm();
   }
 
 }

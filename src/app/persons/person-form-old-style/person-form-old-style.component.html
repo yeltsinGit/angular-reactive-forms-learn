@@ -1,18 +1,16 @@
-<form class="person-form">
+<form class="person-form" novalidate #personForm="ngForm" (ngSubmit)="submitForm(personForm)">
 
-  <!-- FIRST NAME -->
+  <!-- NAME -->
   <div class="form-group row">
-    <label for="firstName" class="col-sm-3 col-form-label">First name</label>
+    <label for="name" class="col-sm-3 col-form-label">Name</label>
     <div class="col-sm-9">
-      <input id="firstName" class="form-control" placeholder="First name (required)" minlength="3">
-    </div>
-  </div>
-
-  <!-- LAST NAME -->
-  <div class="form-group row">
-    <label for="lastName" class="col-sm-3 col-form-label">Last name</label>
-    <div class="col-sm-9">
-      <input id="lastName" class="form-control" placeholder="Last name (required)" minlength="3">
+      <input id="name" class="form-control" placeholder="Name (required)" required minlength="3" name="name"
+        #personName="ngModel" [(ngModel)]="person.name"
+        [ngClass]="{'is-invalid': (personName.touched || personName.dirty) && !personName.valid}">
+      <span class="invalid-feedback" *ngIf="(personName.touched || personName.dirty) && !personName.valid">
+        <span *ngIf="personName.errors?.required">This field is required</span>
+        <span *ngIf="personName.errors?.minlength">Field length should be minimum 3 characters</span>
+      </span>
     </div>
   </div>
 
@@ -20,7 +18,13 @@
   <div class="form-group row">
     <label for="email" class="col-sm-3 col-form-label">Email</label>
     <div class="col-sm-9">
-      <input id="email" type="email" class="form-control" placeholder="Email (required)">
+      <input id="email" type="email" class="form-control" placeholder="Email (required)" required minlength="3"
+        name="email" [(ngModel)]="person.email" #personEmail="ngModel"
+        [ngClass]="{'is-invalid': (personEmail.touched || personEmail.dirty) && !personEmail.valid}">
+      <span class="invalid-feedback" *ngIf="(personEmail.touched || personEmail.dirty) && !personEmail.valid">
+        <span *ngIf="personEmail.errors?.required">This field is required</span>
+        <span *ngIf="personEmail.errors?.minlength">Field length should be minimum 3 characters</span>
+      </span>
     </div>
   </div>
 
@@ -28,13 +32,13 @@
   <div class="form-group row">
     <div class="col-sm-9">
       <div class="form-check">
-        <input id="hasAdress" type="checkbox" class="form-check-input">
+        <input id="hasAdress" type="checkbox" class="form-check-input" name="hasAdress" [(ngModel)]="hasAdress">
         <label class="form-check-label" for="hasAdress">Has address</label>
       </div>
     </div>
   </div>
 
-  <div>
+  <div *ngIf="hasAdress">
     <!-- ADDRESS TYPE -->
     <div class="form-group row">
       <legend class="col-sm-3 col-form-label">Address type</legend>
@@ -86,5 +90,5 @@
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary">Save</button>
+  <button type="submit" class="btn btn-primary" [disabled]="!personForm.valid">Save</button>
 </form>
