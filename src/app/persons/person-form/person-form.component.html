@@ -4,7 +4,7 @@
   <div class="form-group row">
     <label for="name" class="col-sm-3 col-form-label">Name</label>
     <div class="col-sm-9">
-      <input id="name" class="form-control" placeholder="name (required)" required minlength="3" formControlName="name"
+      <input id="name" class="form-control" placeholder="name (required)" formControlName="name"
         [ngClass]="{'is-invalid': (personForm.get('name').touched || personForm.get('name').dirty) && !personForm.get('name').valid}">
       <span class="invalid-feedback"
         *ngIf="(personForm.get('name').touched || personForm.get('name').dirty) && !personForm.get('name').valid">
@@ -14,18 +14,35 @@
     </div>
   </div>
 
-  <!-- EMAIL -->
-  <div class="form-group row">
-    <label for="email" class="col-sm-3 col-form-label">Email</label>
-    <div class="col-sm-9">
-      <input id="email" type="email" class="form-control" placeholder="Email (required)" required minlength="3"
-        formControlName="email"
-        [ngClass]="{'is-invalid': (personForm.get('email').touched || personForm.get('email').dirty) && !personForm.get('email').valid}">
-      <span class="invalid-feedback"
-        *ngIf="(personForm.get('email').touched || personForm.get('email').dirty) && !personForm.get('email').valid">
-        <span *ngIf="personForm.get('email').errors?.required">This field is required</span>
-        <span *ngIf="personForm.get('email').errors?.minlength">Field length should be minimum 3 characters</span>
-      </span>
+  <div formGroupName="emailGroup">
+    <!-- EMAIL -->
+    <div class="form-group row">
+      <label for="email" class="col-sm-3 col-form-label">Email</label>
+      <div class="col-sm-9">
+        <input id="email" type="email" class="form-control" placeholder="Email (required)" formControlName="email"
+          [ngClass]="{'is-invalid': (personForm.get('emailGroup').errors || (personForm.get('emailGroup.email').touched || personForm.get('emailGroup.email').dirty) && !personForm.get('emailGroup.email').valid)}">
+        <span class="invalid-feedback"
+          *ngIf="(personForm.get('emailGroup.email').touched || personForm.get('emailGroup.email').dirty) && !personForm.get('emailGroup.email').valid">
+          <span *ngIf="personForm.get('emailGroup.email').errors?.required">This field is required</span>
+          <span *ngIf="personForm.get('emailGroup.email').errors?.minlength">Field length should be minimum 3
+            characters</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- EMAIL CONFIRM -->
+    <div class="form-group row">
+      <label for="emailConfirm" class="col-sm-3 col-form-label">Email confirm</label>
+      <div class="col-sm-9">
+        <input id="emailConfirm" type="email" class="form-control" placeholder="Email confirmation (required)"
+          formControlName="emailConfirm"
+          [ngClass]="{'is-invalid': (personForm.get('emailGroup').errors ||  (personForm.get('emailGroup.emailConfirm').touched || personForm.get('emailGroup.emailConfirm').dirty) && !personForm.get('emailGroup.emailConfirm').valid)}">
+        <span class="invalid-feedback"
+          *ngIf="(!personForm.get('emailGroup').valid || (personForm.get('emailGroup.emailConfirm').touched || personForm.get('emailGroup.emailConfirm').dirty) && !personForm.get('emailGroup.emailConfirm').valid)">
+          <span *ngIf="personForm.get('emailGroup.emailConfirm').errors?.required">This field is required</span>
+          <span *ngIf="personForm.get('emailGroup').errors?.emailMatch">Fields don't match</span>
+        </span>
+      </div>
     </div>
   </div>
 
@@ -45,19 +62,19 @@
       <legend class="col-sm-3 col-form-label">Address type</legend>
       <div class="col-sm-9 form-row align-items-center">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="addressRadios" id="addressHome" value="home" checked>
+          <input class="form-check-input" type="radio" name="addressType" value="home" formControlName="addressType">
           <label class="form-check-label" for="addressHome">
             Home
           </label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="addressRadios" id="addressWork" value="work">
+          <input class="form-check-input" type="radio" name="addressType" value="work" formControlName="addressType">
           <label class="form-check-label" for="addressWork">
             Work
           </label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="addressRadios" id="addressOther" value="other">
+          <input class="form-check-input" type="radio" name="addressType" value="other" formControlName="addressType">
           <label class="form-check-label" for="addressOther">
             Other
           </label>
@@ -66,13 +83,19 @@
     </div>
 
     <!-- CITY, STATE, ZIP CODE -->
-    <div class="form-group row">
+    <div class="form-group row align-items-center">
       <label for="addressType" class="col-sm-3 col-form-label">City, State, Zip code</label>
 
       <div class="col-sm-9 row">
         <div class="form-group col-md-5">
           <label for="addressCity">City</label>
-          <input type="text" class="form-control" id="addressCity">
+          <input type="text" class="form-control" id="addressCity" name="addressCity" formControlName="addressCity"
+            [ngClass]="{'is-invalid': !personForm.get('addressCity').valid}">
+          <span class="invalid-feedback" *ngIf="!personForm.get('addressCity').valid">
+            <span *ngIf="personForm.get('addressCity').errors?.required">This field is required</span>
+            <span *ngIf="personForm.get('addressCity').errors?.minlength">Field length should be minimum 3
+              characters</span>
+          </span>
         </div>
 
         <div class="form-group col-md-4">
@@ -85,12 +108,26 @@
 
         <div class="form-group col-md-3">
           <label for="addressZip">Zip</label>
-          <input type="text" class="form-control" id="addressZip">
+          <input type="text" class="form-control" id="addressZip" name="addressZip" formControlName="addressZip"
+            [ngClass]="{'is-invalid': !personForm.get('addressZip').valid}">
+          <span class="invalid-feedback" *ngIf="!personForm.get('addressZip').valid">
+            <span *ngIf="personForm.get('addressZip').errors?.required">This field is required</span>
+            <span *ngIf="personForm.get('addressZip').errors?.even">Zip code should be even</span>
+          </span>
         </div>
       </div>
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary" [disabled]="!personForm.valid">Save</button>
-  <button type="submit" class="btn btn-outline-secondary" (click)="onPopulateBtnClick()">Populate test data</button>
+  <div class="form-group">
+    <button type="submit" class="btn btn-outline-secondary" (click)="onPopulateBtnClick()">Populate test data</button>
+    <button type="submit" class="btn btn-outline-info" (click)="onDynamicValidatorsBtnClick()">Toggle dynamic
+      validators</button>
+    <button type="submit" class="btn btn-outline-warning" (click)="onCustomValidatorsBtnClick()">Toggle custom
+      validators</button>
+  </div>
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary" [disabled]="!personForm.valid">Save</button>
+  </div>
 </form>
