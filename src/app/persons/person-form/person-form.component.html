@@ -5,12 +5,8 @@
     <label for="name" class="col-sm-3 col-form-label">Name</label>
     <div class="col-sm-9">
       <input id="name" class="form-control" placeholder="name (required)" formControlName="name"
-        [ngClass]="{'is-invalid': (personForm.get('name').touched || personForm.get('name').dirty) && !personForm.get('name').valid}">
-      <span class="invalid-feedback"
-        *ngIf="(personForm.get('name').touched || personForm.get('name').dirty) && !personForm.get('name').valid">
-        <span *ngIf="personForm.get('name').errors?.required">This field is required</span>
-        <span *ngIf="personForm.get('name').errors?.minlength">Field length should be minimum 3 characters</span>
-      </span>
+        [ngClass]="{'is-invalid': formControlInvalid('name')}">
+      <span class="invalid-feedback" *ngIf="formControlInvalid('name')">{{nameErrorMsg}}</span>
     </div>
   </div>
 
@@ -20,13 +16,8 @@
       <label for="email" class="col-sm-3 col-form-label">Email</label>
       <div class="col-sm-9">
         <input id="email" type="email" class="form-control" placeholder="Email (required)" formControlName="email"
-          [ngClass]="{'is-invalid': (personForm.get('emailGroup').errors || (personForm.get('emailGroup.email').touched || personForm.get('emailGroup.email').dirty) && !personForm.get('emailGroup.email').valid)}">
-        <span class="invalid-feedback"
-          *ngIf="(personForm.get('emailGroup.email').touched || personForm.get('emailGroup.email').dirty) && !personForm.get('emailGroup.email').valid">
-          <span *ngIf="personForm.get('emailGroup.email').errors?.required">This field is required</span>
-          <span *ngIf="personForm.get('emailGroup.email').errors?.minlength">Field length should be minimum 3
-            characters</span>
-        </span>
+          [ngClass]="{'is-invalid': personForm.get('emailGroup').errors || formControlInvalid('emailGroup.email')}">
+        <span class="invalid-feedback" *ngIf="formControlInvalid('emailGroup.email')">{{emailErrorMsg}}</span>
       </div>
     </div>
 
@@ -36,12 +27,9 @@
       <div class="col-sm-9">
         <input id="emailConfirm" type="email" class="form-control" placeholder="Email confirmation (required)"
           formControlName="emailConfirm"
-          [ngClass]="{'is-invalid': (personForm.get('emailGroup').errors ||  (personForm.get('emailGroup.emailConfirm').touched || personForm.get('emailGroup.emailConfirm').dirty) && !personForm.get('emailGroup.emailConfirm').valid)}">
+          [ngClass]="{'is-invalid': personForm.get('emailGroup').errors || formControlInvalid('emailGroup.emailConfirm')}">
         <span class="invalid-feedback"
-          *ngIf="(!personForm.get('emailGroup').valid || (personForm.get('emailGroup.emailConfirm').touched || personForm.get('emailGroup.emailConfirm').dirty) && !personForm.get('emailGroup.emailConfirm').valid)">
-          <span *ngIf="personForm.get('emailGroup.emailConfirm').errors?.required">This field is required</span>
-          <span *ngIf="personForm.get('emailGroup').errors?.emailMatch">Fields don't match</span>
-        </span>
+          *ngIf="!personForm.get('emailGroup').valid || formControlInvalid('emailGroup.emailConfirm')">{{emailConfirmErrorMsg}}</span>
       </div>
     </div>
   </div>

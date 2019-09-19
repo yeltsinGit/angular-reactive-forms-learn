@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { PersonsModule } from './persons/persons.module';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
+import { ToastrModule } from 'ngx-toastr';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { HeaderComponent } from './header/header.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
+    ToastrModule.forRoot(),
     AppRoutingModule,
     PersonsModule,
   ],

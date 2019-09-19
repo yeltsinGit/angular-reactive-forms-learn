@@ -2,6 +2,8 @@ import { PersonsService } from './../persons.service';
 import { Person } from 'src/app/models/person';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { debounceTime } from 'rxjs/operators';
 
 function evenValidator(c: AbstractControl): { [key: string]: boolean } | null {
   if (c.value !== null && !isNaN(c.value) && c.value % 2 !== 0) {
@@ -40,10 +42,19 @@ function emailGroupValidator(c: AbstractControl): { [key: string]: boolean } | n
 export class PersonFormComponent implements OnInit {
   personForm: FormGroup;
   person = new Person('');
+  nameErrorMsg: string = null;
+  emailErrorMsg: string = null;
+  emailConfirmErrorMsg: string = null;
   private toggleDynamicValidators = false;
   private toggleCustomValidators = false;
+  private messages = {
+    required: 'This field is required',
+    minlength: 'Field length should be minimum 3 characters',
+    maxlength: 'Field length should be maximum 50 characters',
+    emailMatch: 'Fields don\'t match',
+  }
 
-  constructor(private personsService: PersonsService, private fb: FormBuilder) { }
+  constructor(private personsService: PersonsService, private fb: FormBuilder, private toastr: ToastrService) { }
 
   ngOnInit() {
     /* Using a form group */
@@ -65,8 +76,49 @@ export class PersonFormComponent implements OnInit {
       addressCity: { value: null, disabled: false }, // different synthax
       addressZip: null,
     });
+
+    this.personForm.get('addressType').valueChanges.subscribe(
+      value => this.toastr.success(`${value} selected`),
+    )
+    this.personForm.get('name').valueChanges.pipe(
+      debounceTime(1000)
+    ).subscribe(
+      value => this.checkControlsValidations(value),
+    )
+    this.personForm.get('emailGroup.email').valueChanges.subscribe(
+      value => this.checkControlsValidations(value),
+    )
+    this.personForm.get('emailGroup.emailConfirm').valueChanges.subscribe(
+      value => this.checkControlsValidations(value),
+    )
   }
 
+  formControlInvalid(controlName: string): boolean {
+    return ((this.personForm.get(controlName).touched || this.personForm.get(controlName).dirty) && !this.personForm.get(controlName).valid);
+  }
+
+  private checkControlsValidations(c: AbstractControl) {
+    if (!this.formControlInvalid('name') && !this.formControlInvalid('emailGroup.email')) return;
+    const nameControl = this.personForm.get('name');
+    const emailControl = this.personForm.get('emailGroup.email');
+    const emailGroupControl = this.personForm.get('emailGroup');
+    
+    if (nameControl.errors) {
+      this.nameErrorMsg = Object.keys(nameControl.errors).map(key => this.messages[key]).join(' ');
+    } else {
+      this.nameErrorMsg = '';
+    }
+    if (emailControl.errors) {
+      this.emailErrorMsg = Object.keys(emailControl.errors).map(key => this.messages[key]).join(' ')
+    } else {
+      this.emailErrorMsg = '';
+    }
+    if (emailGroupControl.errors) {
+      this.emailConfirmErrorMsg = Object.keys(emailGroupControl.errors).map(key => this.messages[key]).join(' ')
+    } else {
+      this.emailConfirmErrorMsg = '';
+    }
+  }
   submitForm() {
     this.personsService.savePerson(this.person);
   }
