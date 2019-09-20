@@ -44,64 +44,64 @@
     </div>
   </div>
 
-  <div *ngIf="personForm.get('hasAddress').value === true">
-    <!-- ADDRESS TYPE -->
-    <div class="form-group row">
-      <legend class="col-sm-3 col-form-label">Address type</legend>
-      <div class="col-sm-9 form-row align-items-center">
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="addressType" value="home" formControlName="addressType">
-          <label class="form-check-label" for="addressHome">
-            Home
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="addressType" value="work" formControlName="addressType">
-          <label class="form-check-label" for="addressWork">
-            Work
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="addressType" value="other" formControlName="addressType">
-          <label class="form-check-label" for="addressOther">
-            Other
-          </label>
-        </div>
-      </div>
-    </div>
+  <div class="form-group">
+    <button class="btn btn-outline-primary" (click)="addAnotherAddress()">Add another address</button>
+  </div>
 
-    <!-- CITY, STATE, ZIP CODE -->
-    <div class="form-group row align-items-center">
-      <label for="addressType" class="col-sm-3 col-form-label">City, State, Zip code</label>
-
-      <div class="col-sm-9 row">
-        <div class="form-group col-md-5">
-          <label for="addressCity">City</label>
-          <input type="text" class="form-control" id="addressCity" name="addressCity" formControlName="addressCity"
-            [ngClass]="{'is-invalid': !personForm.get('addressCity').valid}">
-          <span class="invalid-feedback" *ngIf="!personForm.get('addressCity').valid">
-            <span *ngIf="personForm.get('addressCity').errors?.required">This field is required</span>
-            <span *ngIf="personForm.get('addressCity').errors?.minlength">Field length should be minimum 3
-              characters</span>
-          </span>
+  <div *ngIf="personForm.get('hasAddress').value">
+    <div formArrayName="addresses" *ngFor="let addressGroup of personForm.get('addresses').controls; let i=index;">
+      <div [formGroupName]="i">
+        <!-- ADDRESS TYPE -->
+        <div class="form-group row">
+          <legend class="col-sm-3 col-form-label">Address type</legend>
+          <div class="col-sm-9 form-row align-items-center">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="addressType" value="home"
+                formControlName="addressType">
+              <label class="form-check-label" for="addressHome">Home</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="addressType" value="work"
+                formControlName="addressType">
+              <label class="form-check-label" for="addressWork">Work</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="addressType" value="other"
+                formControlName="addressType">
+              <label class="form-check-label" for="addressOther">Other</label>
+            </div>
+          </div>
         </div>
 
-        <div class="form-group col-md-4">
-          <label for="addressState">State</label>
-          <select id="addressState" class="form-control">
-            <option selected>Choose...</option>
-            <option>...</option>
-          </select>
-        </div>
+        <!-- CITY, STATE, ZIP CODE -->
+        <div class="form-group row align-items-center">
+          <label for="addressType" class="col-sm-3 col-form-label">City, State, Zip code</label>
 
-        <div class="form-group col-md-3">
-          <label for="addressZip">Zip</label>
-          <input type="text" class="form-control" id="addressZip" name="addressZip" formControlName="addressZip"
-            [ngClass]="{'is-invalid': !personForm.get('addressZip').valid}">
-          <span class="invalid-feedback" *ngIf="!personForm.get('addressZip').valid">
-            <span *ngIf="personForm.get('addressZip').errors?.required">This field is required</span>
-            <span *ngIf="personForm.get('addressZip').errors?.even">Zip code should be even</span>
-          </span>
+          <div class="col-sm-9 row">
+            <div class="form-group col-md-5">
+              <label attr.for="{{'addressCity' + i}}">City</label>
+              <input type="text" class="form-control" id="{{'addressCity' + i}}" name="addressCity" formControlName="addressCity"
+                [ngClass]="{'is-invalid': !addressGroup.valid}">
+              <span class="invalid-feedback"
+                *ngIf="!addressGroup.valid">{{addressCityErrorMsg}}</span>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label attr.for="{{'addressState' + i}}">State</label>
+              <select id="{{'addressState' + i}}" class="form-control">
+                <option selected>Choose...</option>
+                <option>...</option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label attr.for="{{'addressZip' + i}}">Zip</label>
+              <input type="text" class="form-control" id="{{'addressZip' + i}}" name="addressZip" formControlName="addressZip"
+                [ngClass]="{'is-invalid': !addressGroup.valid}">
+              <span class="invalid-feedback"
+                *ngIf="!addressGroup.valid">{{addressZipErrorMsg}}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

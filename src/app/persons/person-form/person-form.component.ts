@@ -1,7 +1,7 @@
 import { PersonsService } from './../persons.service';
 import { Person } from 'src/app/models/person';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl, ValidatorFn, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { debounceTime } from 'rxjs/operators';
 
@@ -45,6 +45,8 @@ export class PersonFormComponent implements OnInit {
   nameErrorMsg: string = null;
   emailErrorMsg: string = null;
   emailConfirmErrorMsg: string = null;
+  addressCityErrorMsg: string = null;
+  addressZipErrorMsg: string = null;
   private toggleDynamicValidators = false;
   private toggleCustomValidators = false;
   private messages = {
@@ -52,6 +54,7 @@ export class PersonFormComponent implements OnInit {
     minlength: 'Field length should be minimum 3 characters',
     maxlength: 'Field length should be maximum 50 characters',
     emailMatch: 'Fields don\'t match',
+    even: 'Field should be even',
   }
 
   constructor(private personsService: PersonsService, private fb: FormBuilder, private toastr: ToastrService) { }
@@ -72,14 +75,9 @@ export class PersonFormComponent implements OnInit {
         emailConfirm: [null, [Validators.required]],
       }, { validators: [emailGroupValidator] }),
       hasAddress: [true],
-      addressType: 'home',
-      addressCity: { value: null, disabled: false }, // different synthax
-      addressZip: null,
+      addresses: this.fb.array([this.createAddressGroup()]),
     });
 
-    this.personForm.get('addressType').valueChanges.subscribe(
-      value => this.toastr.success(`${value} selected`),
-    )
     this.personForm.get('name').valueChanges.pipe(
       debounceTime(1000)
     ).subscribe(
@@ -91,6 +89,15 @@ export class PersonFormComponent implements OnInit {
     this.personForm.get('emailGroup.emailConfirm').valueChanges.subscribe(
       value => this.checkControlsValidations(value),
     )
+    // this.personForm.get('addressGroup.addressCity').valueChanges.subscribe(
+    //   value => this.checkControlsValidations(value),
+    // )
+    // this.personForm.get('addressGroup.addressZip').valueChanges.subscribe(
+    //   value => this.checkControlsValidations(value),
+    // )
+    this.personForm.get('addresses').valueChanges.subscribe(
+      value => this.checkControlsValidations(value),
+    )
   }
 
   formControlInvalid(controlName: string): boolean {
@@ -98,11 +105,11 @@ export class PersonFormComponent implements OnInit {
   }
 
   private checkControlsValidations(c: AbstractControl) {
-    if (!this.formControlInvalid('name') && !this.formControlInvalid('emailGroup.email')) return;
+    if (!this.formControlInvalid('name') && !this.formControlInvalid('emailGroup') && !this.formControlInvalid('addresses')) return;
     const nameControl = this.personForm.get('name');
     const emailControl = this.personForm.get('emailGroup.email');
     const emailGroupControl = this.personForm.get('emailGroup');
-    
+
     if (nameControl.errors) {
       this.nameErrorMsg = Object.keys(nameControl.errors).map(key => this.messages[key]).join(' ');
     } else {
@@ -118,7 +125,33 @@ export class PersonFormComponent implements OnInit {
     } else {
       this.emailConfirmErrorMsg = '';
     }
+    const cityError = this.addressesCities.find(control => control.errors);
+    if (cityError) {
+      this.addressCityErrorMsg = Object.keys(cityError.errors).map(key => this.messages[key]).join(' ')
+    } else {
+      this.addressCityErrorMsg = '';
+    }
+    const zipError = this.addressesCities.find(control => control.errors);
+    if (zipError) {
+      this.addressZipErrorMsg = Object.keys(zipError.errors).map(key => this.messages[key]).join(' ')
+    } else {
+      this.addressZipErrorMsg = '';
+    }
   }
+
+  private createAddressGroup(): FormGroup {
+    return this.fb.group({
+      addressType: 'home',
+      addressCity: null,
+      addressZip: null,
+    });
+  }
+
+  addAnotherAddress() {
+    const addresses = this.personForm.get('addresses'); 
+    (<FormArray>addresses).push(this.createAddressGroup());
+  }
+
   submitForm() {
     this.personsService.savePerson(this.person);
   }
@@ -134,18 +167,24 @@ export class PersonFormComponent implements OnInit {
 
   onDynamicValidatorsBtnClick() {
     this.toggleDynamicValidators = !this.toggleDynamicValidators;
-    const cityControl: AbstractControl = this.personForm.get('addressCity');
-    if (this.toggleDynamicValidators) {
-      cityControl.setValidators([Validators.required, Validators.minLength(2)])
-    } else {
-      cityControl.clearValidators();
+    const addresses: FormArray = <FormArray>this.personForm.get('addresses');
+    for (const group of addresses.controls) {
+      const controls = (<FormGroup>group).controls;
+      if (controls.addressCity) {
+        const cityControl: AbstractControl = controls.addressCity;
+        if (this.toggleDynamicValidators) {
+          cityControl.setValidators([Validators.required, Validators.minLength(2)])
+        } else {
+          cityControl.clearValidators();
+        }
+        cityControl.updateValueAndValidity();
+      }
     }
-    cityControl.updateValueAndValidity();
   }
 
   onCustomValidatorsBtnClick() {
     this.toggleCustomValidators = !this.toggleCustomValidators;
-    const cityControl: AbstractControl = this.personForm.get('addressZip');
+    const cityControl: AbstractControl = this.personForm.get('addressGroup.addressZip');
     if (this.toggleCustomValidators) {
       cityControl.setValidators([Validators.required, evenValidator]);
       // see eventValidatorWithParams(true) function for validators with params
@@ -153,5 +192,17 @@ export class PersonFormComponent implements OnInit {
       cityControl.clearValidators();
     }
     cityControl.updateValueAndValidity();
+  }
+
+  get addressesCities() {
+    return (<FormArray>this.personForm.get('addresses')).controls
+      .map(group => (<FormGroup>group).controls)
+      .map(groupControls => groupControls.addressCity)
+  }
+
+  get addressesZips() {
+    return (<FormArray>this.personForm.get('addresses')).controls
+      .map(group => (<FormGroup>group).controls)
+      .map(groupControls => groupControls.addressZip)
   }
 }
