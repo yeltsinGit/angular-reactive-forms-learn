@@ -1,6 +1,6 @@
-import { PersonsService } from './persons.service';
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { IPerson } from '../models/person';
 
 @Component({
@@ -12,10 +12,11 @@ import { IPerson } from '../models/person';
 export class PersonsComponent implements OnInit {
   persons$: Observable<IPerson[]>;
 
-  constructor(private personsService: PersonsService) { }
+  constructor(private route: ActivatedRoute) {
+    this.persons$ = of(this.route.snapshot.data.persons);
+  }
 
   ngOnInit() {
-    this.persons$ = this.personsService.loadPersons();
   }
 
 }

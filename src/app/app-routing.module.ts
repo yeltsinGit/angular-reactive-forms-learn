@@ -9,10 +9,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: 'persons', component: PersonsComponent },
-  { path: 'persons/:id', component: PersonComponent },
-  { path: 'addPerson', component: PersonFormComponent },
-  { path: 'addPerson-oldStyle', component: PersonFormOldStyleComponent },
+  { path: 'persons', loadChildren: () => import('./persons/persons.module').then(m => m.PersonsModule) },
 ];
 
 @NgModule({
